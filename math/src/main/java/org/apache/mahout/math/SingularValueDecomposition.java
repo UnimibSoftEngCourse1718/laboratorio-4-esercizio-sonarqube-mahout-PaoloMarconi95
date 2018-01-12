@@ -47,7 +47,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
    * @param arg
    *            A rectangular matrix.
    */
-  public SingularValueDecomposition(Matrix arg) {
+  public SingularValueDecomposition(Matrix arg) {  // chi ha scritto ciò non è normale
     if (arg.numRows() < arg.numCols()) {
       transpositionNeeded = true;
     }
@@ -244,26 +244,8 @@ public class SingularValueDecomposition implements java.io.Serializable {
     
     // If required, generate V.
     
-    if (wantv) {
-      for (int k = n - 1; k >= 0; k--) {
-        if (k < nrt && e[k] != 0.0) {
-          for (int j = k + 1; j < nu; j++) {
-            double t = 0;
-            for (int i = k + 1; i < n; i++) {
-              t += v[i][k] * v[i][j];
-            }
-            t = -t / v[k + 1][k];
-            for (int i = k + 1; i < n; i++) {
-              v[i][j] += t * v[i][k];
-            }
-          }
-        }
-        for (int i = 0; i < n; i++) {
-          v[i][k] = 0.0;
-        }
-        v[k][k] = 1.0;
-      }
-    }
+    if (wantv)
+    	generateV(nrt, e, nu) ;
     
     // Main iteration loop for the singular values.
     
@@ -493,6 +475,27 @@ public class SingularValueDecomposition implements java.io.Serializable {
     }
   }
   
+  public void generateV(int nrt, double[] e, int nu){
+      for (int k = n - 1; k >= 0; k--) {
+          if (k < nrt && e[k] != 0.0) {
+            for (int j = k + 1; j < nu; j++) {
+              double t = 0;
+              for (int i = k + 1; i < n; i++) {
+                t += v[i][k] * v[i][j];
+              }
+              t = -t / v[k + 1][k];
+              for (int i = k + 1; i < n; i++) {
+                v[i][j] += t * v[i][k];
+              }
+            }
+          }
+          for (int i = 0; i < n; i++) {
+            v[i][k] = 0.0;
+          }
+          v[k][k] = 1.0;
+        }
+  }
+  
   /**
    * Returns the two norm condition number, which is <tt>max(S) / min(S)</tt>.
    */
@@ -504,15 +507,15 @@ public class SingularValueDecomposition implements java.io.Serializable {
    * @return the diagonal matrix of singular values.
    */
   public Matrix getS() {
-    double[][] s = new double[n][n];
+    double[][] s_temp = new double[n][n];
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < n; j++) {
-        s[i][j] = 0.0;
+        s_temp[i][j] = 0.0;
       }
-      s[i][i] = this.s[i];
+      s_temp[i][i] = this.s[i];
     }
     
-    return new DenseMatrix(s);
+    return new DenseMatrix(s_temp);
   }
   
   /**
