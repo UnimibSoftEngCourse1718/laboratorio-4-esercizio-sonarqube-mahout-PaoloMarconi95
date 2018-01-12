@@ -291,7 +291,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
           break;
         }
         if (Math.abs(e[k]) <= tiny +eps * (Math.abs(s[k]) + Math.abs(s[k + 1]))) {
-          e[k] = 0.0;
+          e[k] = 0;
           break;
         }
       }
@@ -308,7 +308,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
             (ks != p ?  Math.abs(e[ks]) : 0.) +
             (ks != k + 1 ?  Math.abs(e[ks-1]) : 0.);
           if (Math.abs(s[ks]) <= tiny + eps * t) {
-            s[ks] = 0.0;
+            s[ks] = 0;
             break;
           }
         }

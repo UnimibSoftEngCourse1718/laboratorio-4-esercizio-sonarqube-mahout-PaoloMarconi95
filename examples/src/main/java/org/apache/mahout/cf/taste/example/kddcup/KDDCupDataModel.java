@@ -69,12 +69,10 @@ public final class KDDCupDataModel implements DataModel {
         "Must be: 0.0 < samplingRate <= 1.0");
 
     dataFileDirectory = dataFile.getParentFile();
-
-    Iterator<Pair<PreferenceArray,long[]>> dataIterator = new DataFileIterator(dataFile);
+    	Iterator<Pair<PreferenceArray,long[]>> dataIterator = new DataFileIterator(dataFile);
     if (samplingRate < 1.0) {
       dataIterator = new SamplingIterator<>(dataIterator, samplingRate);
     }
-
     FastByIDMap<PreferenceArray> userData = new FastByIDMap<>();
     FastByIDMap<FastByIDMap<Long>> timestamps = new FastByIDMap<>();
 

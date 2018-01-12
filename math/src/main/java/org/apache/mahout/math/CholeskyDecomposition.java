@@ -67,6 +67,11 @@ public class CholeskyDecomposition {
           }
         }
       }
+      decompose_help(k, pivot, uberMax, n);
+    }
+  }
+  
+  private void decompose_help(int k, int pivot, double uberMax, int n){
       L.swap(k, pivot);
 
       double akk = L.get(k, k);
@@ -95,7 +100,6 @@ public class CholeskyDecomposition {
         }
 
       }
-    }
   }
 
   private void decompose(Matrix a) {

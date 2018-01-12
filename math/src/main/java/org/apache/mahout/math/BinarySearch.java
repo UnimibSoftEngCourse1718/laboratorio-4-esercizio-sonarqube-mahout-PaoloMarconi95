@@ -59,23 +59,6 @@ public final class BinarySearch {
     return -mid - (value < array[mid] ? 1 : 2);
   }
 
-  /**
-   * Performs a binary search for the specified element in the specified
-   * ascending sorted array. Searching in an unsorted array has an undefined
-   * result. It's also undefined which element is found if there are multiple
-   * occurrences of the same element.
-   *
-   * @param array
-   *          the sorted {@code char} array to search.
-   * @param value
-   *          the {@code char} element to find.
-   * @param from
-   *          the first index to sort, inclusive.
-   * @param to
-   *          the last index to sort, inclusive.
-   * @return the non-negative index of the element, or a negative index which is
-   *         {@code -index - 1} where the element would be inserted.
-   */
   public static int binarySearchFromTo(char[] array, char value, int from, int to) {
     int mid = -1;
     while (from <= to) {
@@ -93,24 +76,6 @@ public final class BinarySearch {
     }
     return -mid - (value < array[mid] ? 1 : 2);
   }
-
-  /**
-   * Performs a binary search for the specified element in the specified
-   * ascending sorted array. Searching in an unsorted array has an undefined
-   * result. It's also undefined which element is found if there are multiple
-   * occurrences of the same element.
-   *
-   * @param array
-   *          the sorted {@code double} array to search.
-   * @param value
-   *          the {@code double} element to find.
-   * @param from
-   *          the first index to sort, inclusive.
-   * @param to
-   *          the last index to sort, inclusive.
-   * @return the non-negative index of the element, or a negative index which is
-   *         {@code -index - 1} where the element would be inserted.
-   */
   public static int binarySearchFromTo(double[] array, double value, int from, int to) {
     long longBits = Double.doubleToLongBits(value);
     int mid = -1;
@@ -130,23 +95,6 @@ public final class BinarySearch {
     return -mid - (lessThan(value, array[mid]) ? 1 : 2);
   }
 
-  /**
-   * Performs a binary search for the specified element in the specified
-   * ascending sorted array. Searching in an unsorted array has an undefined
-   * result. It's also undefined which element is found if there are multiple
-   * occurrences of the same element.
-   *
-   * @param array
-   *          the sorted {@code float} array to search.
-   * @param value
-   *          the {@code float} element to find.
-   * @param from
-   *          the first index to sort, inclusive.
-   * @param to
-   *          the last index to sort, inclusive.
-   * @return the non-negative index of the element, or a negative index which is
-   *         {@code -index - 1} where the element would be inserted.
-   */
   public static int binarySearchFromTo(float[] array, float value, int from, int to) {
     int intBits = Float.floatToIntBits(value);
     int mid = -1;
@@ -166,23 +114,6 @@ public final class BinarySearch {
     return -mid - (lessThan(value, array[mid]) ? 1 : 2);
   }
 
-  /**
-   * Performs a binary search for the specified element in the specified
-   * ascending sorted array. Searching in an unsorted array has an undefined
-   * result. It's also undefined which element is found if there are multiple
-   * occurrences of the same element.
-   *
-   * @param array
-   *          the sorted {@code int} array to search.
-   * @param value
-   *          the {@code int} element to find.
-   * @param from
-   *          the first index to sort, inclusive.
-   * @param to
-   *          the last index to sort, inclusive.
-   * @return the non-negative index of the element, or a negative index which is
-   *         {@code -index - 1} where the element would be inserted.
-   */
   public static int binarySearchFromTo(int[] array, int value, int from, int to) {
     int mid = -1;
     while (from <= to) {
@@ -201,23 +132,6 @@ public final class BinarySearch {
     return -mid - (value < array[mid] ? 1 : 2);
   }
 
-  /**
-   * Performs a binary search for the specified element in the specified
-   * ascending sorted array. Searching in an unsorted array has an undefined
-   * result. It's also undefined which element is found if there are multiple
-   * occurrences of the same element.
-   *
-   * @param array
-   *          the sorted {@code long} array to search.
-   * @param value
-   *          the {@code long} element to find.
-   * @param from
-   *          the first index to sort, inclusive.
-   * @param to
-   *          the last index to sort, inclusive.
-   * @return the non-negative index of the element, or a negative index which is
-   *         {@code -index - 1} where the element would be inserted.
-   */
   public static int binarySearchFromTo(long[] array, long value, int from, int to) {
     int mid = -1;
     while (from <= to) {
@@ -236,24 +150,6 @@ public final class BinarySearch {
     return -mid - (value < array[mid] ? 1 : 2);
   }
 
-  /**
-   * Performs a binary search for the specified element in the specified
-   * ascending sorted array. Searching in an unsorted array has an undefined
-   * result. It's also undefined which element is found if there are multiple
-   * occurrences of the same element.
-   *
-   * @param array
-   *          the sorted {@code Object} array to search.
-   * @param object
-   *          the {@code Object} element to find
-   * @param from
-   *          the first index to sort, inclusive.
-   * @param to
-   *          the last index to sort, inclusive.
-   * @return the non-negative index of the element, or a negative index which is
-   *         {@code -index - 1} where the element would be inserted.
-   *
-   */
   public static <T extends Comparable<T>> int binarySearchFromTo(T[] array, T object, int from, int to) {
     if (array.length == 0) {
       return -1;
@@ -274,25 +170,6 @@ public final class BinarySearch {
     return -mid - (result >= 0 ? 1 : 2);
   }
 
-  /**
-   * Performs a binary search for the specified element in the specified
-   * ascending sorted array using the {@code Comparator} to compare elements.
-   * Searching in an unsorted array has an undefined result. It's also undefined
-   * which element is found if there are multiple occurrences of the same
-   * element.
-   *
-   * @param array
-   *          the sorted array to search
-   * @param object
-   *          the element to find
-   * @param from
-   *          the first index to sort, inclusive.
-   * @param to
-   *          the last index to sort, inclusive.
-   * @param comparator
-   *          the {@code Comparator} used to compare the elements.
-   * @return the non-negative index of the element, or a negative index which
-   */
   public static <T> int binarySearchFromTo(T[] array, T object, int from, int to, Comparator<? super T> comparator) {
     int mid = 0;
     int result = 0;
@@ -309,23 +186,6 @@ public final class BinarySearch {
     return -mid - (result >= 0 ? 1 : 2);
   }
 
-  /**
-   * Performs a binary search for the specified element in the specified
-   * ascending sorted array. Searching in an unsorted array has an undefined
-   * result. It's also undefined which element is found if there are multiple
-   * occurrences of the same element.
-   *
-   * @param array
-   *          the sorted {@code short} array to search.
-   * @param value
-   *          the {@code short} element to find.
-   * @param from
-   *          the first index to sort, inclusive.
-   * @param to
-   *          the last index to sort, inclusive.
-   * @return the non-negative index of the element, or a negative index which is
-   *         {@code -index - 1} where the element would be inserted.
-   */
   public static int binarySearchFromTo(short[] array, short value, int from, int to) {
     int mid = -1;
     while (from <= to) {

@@ -64,7 +64,7 @@ public class QRDecomposition implements QR {
 
     Matrix qTmp = a.clone();
 
-    boolean fullRank = true;
+    boolean fullRank_temp = true;
 
     r = new DenseMatrix(min, columns);
 
@@ -77,7 +77,7 @@ public class QRDecomposition implements QR {
         if (Double.isInfinite(alpha) || Double.isNaN(alpha)) {
           throw new ArithmeticException("Invalid intermediate result");
         }
-        fullRank = false;
+        fullRank_temp = false;
       }
       r.set(i, i, alpha);
 
@@ -102,7 +102,7 @@ public class QRDecomposition implements QR {
     } else {
       q = qTmp;
     }
-    this.fullRank = fullRank;
+    this.fullRank = fullRank_temp;
   }
 
   /**
@@ -157,13 +157,13 @@ public class QRDecomposition implements QR {
     Matrix qt = getQ().transpose();
     Matrix y = qt.times(B);
 
-    Matrix r = getR();
+    Matrix r_temp = getR();
     for (int k = Math.min(columns, rows) - 1; k >= 0; k--) {
       // X[k,] = Y[k,] / R[k,k], note that X[k,] starts with 0 so += is same as =
-      x.viewRow(k).assign(y.viewRow(k), Functions.plusMult(1 / r.get(k, k)));
+      x.viewRow(k).assign(y.viewRow(k), Functions.plusMult(1 / r_temp.get(k, k)));
 
       // Y[0:(k-1),] -= R[0:(k-1),k] * X[k,]
-      Vector rColumn = r.viewColumn(k).viewPart(0, k);
+      Vector rColumn = r_temp.viewColumn(k).viewPart(0, k);
       for (int c = 0; c < cols; c++) {
         y.viewColumn(c).viewPart(0, k).assign(rColumn, Functions.plusMult(-x.get(k, c)));
       }

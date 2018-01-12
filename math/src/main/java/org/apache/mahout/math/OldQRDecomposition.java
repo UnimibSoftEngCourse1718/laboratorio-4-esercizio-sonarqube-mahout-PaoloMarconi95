@@ -85,46 +85,46 @@ public class OldQRDecomposition implements QR {
       for (int i = k; i < originalRows; i++) { // fixes bug reported by hong.44@osu.edu
         nrm = Algebra.hypot(nrm, qr.getQuick(i, k));
       }
-
-
-      if (nrm != 0.0) {
-        // Form k-th Householder vector.
-        if (qr.getQuick(k, k) < 0) {
-          nrm = -nrm;
-        }
-        QRcolumnsPart[k].assign(Functions.div(nrm));
-        /*
-        for (int i = k; i < m; i++) {
-           QR[i][k] /= nrm;
-        }
-        */
-
-        qr.setQuick(k, k, qr.getQuick(k, k) + 1);
-
-        // Apply transformation to remaining columns.
-        for (int j = k + 1; j < originalColumns; j++) {
-          Vector QRcolj = qr.viewColumn(j).viewPart(k, originalRows - k);
-          double s = QRcolumnsPart[k].dot(QRcolj);
-          /*
-          // fixes bug reported by John Chambers
-          DoubleMatrix1D QRcolj = QR.viewColumn(j).viewPart(k,m-k);
-          double s = QRcolumnsPart[k].zDotProduct(QRcolumns[j]);
-          double s = 0.0;
-          for (int i = k; i < m; i++) {
-            s += QR[i][k]*QR[i][j];
-          }
-          */
-          s = -s / qr.getQuick(k, k);
-          //QRcolumnsPart[j].assign(QRcolumns[k], F.plusMult(s));
-
-          for (int i = k; i < originalRows; i++) {
-            qr.setQuick(i, j, qr.getQuick(i, j) + s * qr.getQuick(i, k));
-          }
-
-        }
-      }
+      decomp_helper(nrm, k, QRcolumnsPart);
       rDiag.setQuick(k, -nrm);
     }
+  }
+  
+  public void decomp_helper(double nrm, int k, Vector[] QRcolumnsPart){
+      if (nrm != 0.0) {
+          // Form k-th Householder vector.
+          if (qr.getQuick(k, k) < 0) {
+            nrm = -nrm;
+          }
+          QRcolumnsPart[k].assign(Functions.div(nrm));
+          /*
+          for (int i = k; i < m; i++) {
+             QR[i][k] /= nrm;
+          }
+          */
+          qr.setQuick(k, k, qr.getQuick(k, k) + 1);
+          // Apply transformation to remaining columns.
+          for (int j = k + 1; j < originalColumns; j++) {
+            Vector QRcolj = qr.viewColumn(j).viewPart(k, originalRows - k);
+            double s = QRcolumnsPart[k].dot(QRcolj);
+            /*
+            // fixes bug reported by John Chambers
+            DoubleMatrix1D QRcolj = QR.viewColumn(j).viewPart(k,m-k);
+            double s = QRcolumnsPart[k].zDotProduct(QRcolumns[j]);
+            double s = 0.0;
+            for (int i = k; i < m; i++) {
+              s += QR[i][k]*QR[i][j];
+            }
+            */
+            s = -s / qr.getQuick(k, k);
+            //QRcolumnsPart[j].assign(QRcolumns[k], F.plusMult(s));
+
+            for (int i = k; i < originalRows; i++) {
+              qr.setQuick(i, j, qr.getQuick(i, j) + s * qr.getQuick(i, k));
+            }
+
+          }
+        }
   }
 
   /**

@@ -94,6 +94,19 @@ public abstract class AbstractVector implements Vector, LengthCachingVector {
 
     double result;
     if (isSequentialAccess() || aggregator.isAssociativeAndCommutative()) {
+    	result = aggapply(map, aggregator) ;
+    } else {
+      result = map.apply(getQuick(0));
+      for (int i = 1; i < size; i++) {
+        result = aggregator.apply(result, map.apply(getQuick(i)));
+      }
+    }
+
+    return result;
+  }
+  
+  public double aggapply(DoubleFunction map,DoubleDoubleFunction aggregator){
+	  double res ;
       Iterator<Element> iterator;
       // If fm(0) = 0 and fa(x, 0) = x, we can skip all zero values.
       if (!map.isDensifying() && aggregator.isLikeRightPlus()) {
@@ -105,19 +118,12 @@ public abstract class AbstractVector implements Vector, LengthCachingVector {
         iterator = iterator();
       }
       Element element = iterator.next();
-      result = map.apply(element.get());
+      res = map.apply(element.get());
       while (iterator.hasNext()) {
         element = iterator.next();
-        result = aggregator.apply(result, map.apply(element.get()));
+        res = aggregator.apply(res, map.apply(element.get()));
       }
-    } else {
-      result = map.apply(getQuick(0));
-      for (int i = 1; i < size; i++) {
-        result = aggregator.apply(result, map.apply(getQuick(i)));
-      }
-    }
-
-    return result;
+      return res;
   }
 
   @Override
@@ -267,7 +273,7 @@ public abstract class AbstractVector implements Vector, LengthCachingVector {
     if (lengthSquared >= 0.0) {
       return lengthSquared;
     }
-    return lengthSquared = dotSelf();
+    return dotSelf();
   }
 
   @Override
@@ -470,28 +476,33 @@ public abstract class AbstractVector implements Vector, LengthCachingVector {
         it.next().set(value);
       }
     } else {
-      if (isSequentialAccess() && !isAddConstantTime()) {
-        // Update all the non-zero values and queue the updates for the zero vaues.
-        // The vector will become dense.
-        it = iterator();
-        OrderedIntDoubleMapping updates = new OrderedIntDoubleMapping();
-        while (it.hasNext()) {
-          Element element = it.next();
-          if (element.get() == 0.0) {
-            updates.set(element.index(), value);
-          } else {
-            element.set(value);
-          }
-        }
-        mergeUpdates(updates);
-      } else {
-        for (int i = 0; i < size; ++i) {
-          setQuick(i, value);
-        }
-      }
+    	setiterator(value);
     }
     invalidateCachedLength();
     return this;
+  }
+  
+  public void setiterator(double value){
+	  Iterator<Element> it;
+      if (isSequentialAccess() && !isAddConstantTime()) {
+          // Update all the non-zero values and queue the updates for the zero vaues.
+          // The vector will become dense.
+          it = iterator();
+          OrderedIntDoubleMapping updates = new OrderedIntDoubleMapping();
+          while (it.hasNext()) {
+            Element element = it.next();
+            if (element.get() == 0.0) {
+              updates.set(element.index(), value);
+            } else {
+              element.set(value);
+            }
+          }
+          mergeUpdates(updates);
+        } else {
+          for (int i = 0; i < size; ++i) {
+            setQuick(i, value);
+          }
+        }
   }
 
   @Override

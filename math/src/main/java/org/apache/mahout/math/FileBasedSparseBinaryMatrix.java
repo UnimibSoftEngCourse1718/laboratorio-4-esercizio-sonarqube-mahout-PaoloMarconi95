@@ -72,8 +72,8 @@ public final class FileBasedSparseBinaryMatrix extends AbstractMatrix {
 
   public void setData(File f) throws IOException {
     List<ByteBuffer> buffers = Lists.newArrayList();
+    try{
     FileChannel input = new FileInputStream(f).getChannel();
-
     buffers.add(input.map(FileChannel.MapMode.READ_ONLY, 0, Math.min(Integer.MAX_VALUE, f.length())));
     data.add(buffers.get(0).asIntBuffer());
     Preconditions.checkArgument(buffers.get(0).getInt() == MAGIC_NUMBER_V0, "Wrong type of file");
@@ -102,6 +102,7 @@ public final class FileBasedSparseBinaryMatrix extends AbstractMatrix {
         buffers.add(input.map(FileChannel.MapMode.READ_ONLY, 0, Math.min(Integer.MAX_VALUE, f.length() - offset)));
         data.add(buffers.get(buffer).asIntBuffer());
       }
+      
       rowOffset[i] = offset / 4;
       rowSize[i] = size;
       bufferIndex[i] = buffer;
@@ -110,18 +111,21 @@ public final class FileBasedSparseBinaryMatrix extends AbstractMatrix {
 //      this.rows.add(v);
       offset += size * 4;
     }
+    }
+    catch(Exception e){
+    	System.out.println(e.getMessage());
+    }
   }
 
   public static void writeMatrix(File f, Matrix m) throws IOException {
     Preconditions.checkArgument(f.canWrite(), "Can't write to output file");
+    
+    try{
     FileOutputStream fos = new FileOutputStream(f);
-
-    // write header
     DataOutputStream out = new DataOutputStream(fos);
     out.writeInt(MAGIC_NUMBER_V0);
     out.writeInt(m.rowSize());
     out.writeInt(m.columnSize());
-
     // compute offsets and write row headers
     for (MatrixSlice row : m) {
       int nondefaultElements = row.vector().getNumNondefaultElements();
@@ -146,6 +150,11 @@ public final class FileBasedSparseBinaryMatrix extends AbstractMatrix {
 
     out.close();
     fos.close();
+    }
+    catch(Exception e){
+    	System.out.print(e.getMessage());
+    }
+
   }
 
   /**
@@ -162,15 +171,6 @@ public final class FileBasedSparseBinaryMatrix extends AbstractMatrix {
     throw new UnsupportedOperationException("Default operation");
   }
 
-  /**
-   * Assign the other vector values to the row of the receiver
-   *
-   * @param row   the int row to assign
-   * @param other a Vector
-   * @return the modified receiver
-   * @throws org.apache.mahout.math.CardinalityException
-   *          if the cardinalities differ
-   */
   @Override
   public Matrix assignRow(int row, Vector other) {
     throw new UnsupportedOperationException("Default operation");
@@ -237,13 +237,6 @@ public final class FileBasedSparseBinaryMatrix extends AbstractMatrix {
     return new DenseMatrix(rows, columns);
   }
 
-  /**
-   * Set the value at the given index, without checking bounds
-   *
-   * @param row    an int row index into the receiver
-   * @param column an int column index into the receiver
-   * @param value  a double value to set
-   */
   @Override
   public void setQuick(int row, int column, double value) {
     throw new UnsupportedOperationException("Default operation");
@@ -290,13 +283,13 @@ public final class FileBasedSparseBinaryMatrix extends AbstractMatrix {
       this.maxIndex = maxIndex;
     }
 
-    SparseBinaryVector(ByteBuffer row, int maxIndex, int offset, int size) {
+    SparseBinaryVector(ByteBuffer row_temp, int maxIndex, int offset, int size) {
       super(maxIndex);
-      row = row.asReadOnlyBuffer();
-      row.position(offset);
-      row.limit(offset + size * 4);
-      row = row.slice();
-      this.buffer = row.slice().asIntBuffer();
+      row_temp = row_temp.asReadOnlyBuffer();
+      row_temp.position(offset);
+      row_temp.limit(offset + size * 4);
+      row_temp = row_temp.slice();
+      this.buffer = row_temp.slice().asIntBuffer();
       this.maxIndex = maxIndex;
     }
 
@@ -516,9 +509,6 @@ public final class FileBasedSparseBinaryMatrix extends AbstractMatrix {
       return 1;
     }
 
-    /**
-     * @return the index of this vector element.
-     */
     @Override
     public int index() {
       return index;

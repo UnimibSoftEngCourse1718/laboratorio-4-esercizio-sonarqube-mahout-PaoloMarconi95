@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 import com.google.common.base.Preconditions;
 
 /** Implements vector as an array of doubles */
-public class DenseVector extends AbstractVector {
+public class DenseVector extends AbstractVector implements Cloneable {
 
   private double[] values;
 
@@ -96,7 +96,9 @@ public class DenseVector extends AbstractVector {
   @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public DenseVector clone() {
-    return new DenseVector(values.clone());
+    DenseVector cloned = (DenseVector) super.clone();
+    cloned.values = this.values ;
+    return cloned ;
   }
 
   /**
@@ -189,9 +191,9 @@ public class DenseVector extends AbstractVector {
   public void mergeUpdates(OrderedIntDoubleMapping updates) {
     int numUpdates = updates.getNumMappings();
     int[] indices = updates.getIndices();
-    double[] values = updates.getValues();
+    double[] values_temp = updates.getValues();
     for (int i = 0; i < numUpdates; ++i) {
-      this.values[indices[i]] = values[i];
+      this.values[indices[i]] = values_temp[i];
     }
   }
 

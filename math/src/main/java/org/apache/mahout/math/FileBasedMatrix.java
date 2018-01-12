@@ -65,6 +65,7 @@ public final class FileBasedMatrix extends AbstractMatrix {
     for (int i = 0; i < (rows + rowsPerBlock - 1) / rowsPerBlock; i++) {
       long start = i * rowsPerBlock * columns * 8L;
       long size = rowsPerBlock * columns * 8L;
+      try{
       MappedByteBuffer buf = new FileInputStream(f).getChannel().map(FileChannel.MapMode.READ_ONLY, start,
                                                                      Math.min(f.length() - start, size));
       if (loadNow) {
@@ -72,6 +73,10 @@ public final class FileBasedMatrix extends AbstractMatrix {
       }
       addData(buf.asDoubleBuffer());
     }
+    catch(Exception e){
+    	System.out.println(e.getMessage()) ;
+    }
+   }
   }
 
   public static void writeMatrix(File f, Matrix m) throws IOException {
